@@ -1,0 +1,43 @@
+# CodeRefine/docker-compose.yml
+
+services:
+  # 1. Backend Servisi (FastAPI)
+  backend:
+    build:
+      context: ./code-refine-backend-main
+      dockerfile: Dockerfile
+    container_name: coderefine-backend
+    env_file:
+      - ./code-refine-backend-main/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  # 2. Frontend Servisi (Next.js)
+  frontend:
+    build:
+      context: ./code-refine-frontend-main
+      dockerfile: Dockerfile
+    container_name: coderefine-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # 3. Veritabanı Servisi (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: coderefine-db
+    # .env dosyasındaki kimlik bilgileriyle EŞLEŞTİRİLDİ
+    environment:
+      POSTGRES_USER: coderefine
+      POSTGRES_PASSWORD: coderefine123
+      POSTGRES_DB: coderefine
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

@@ -1,0 +1,14 @@
+# Python & Venv (Backend)
+code-refine-backend-main/venv/
+__pycache__/
+*.pyc
+
+# Gizli .env dosyaları (ASLA GÖNDERME!)
+code-refine-backend-main/.env
+
+# Node.js (Frontend)
+code-refine-frontend-main/node_modules/
+code-refine-frontend-main/.next/
+
+# OS dosyaları
+.DS_Store
