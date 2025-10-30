@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import auth, users
+# 'analysis' router'ını buraya import ediyoruz
+from app.api.routers import auth, users, analysis
 
 app = FastAPI(title="CodeRefine API")
 
@@ -15,3 +16,7 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(users.router, prefix="/users", tags=["users"])
+
+# YENİ EKLENEN SATIR: Analiz router'ını uygulamaya dahil et
+# Bu, /analysis/ adresini aktif hale getirecek
+app.include_router(analysis.router, prefix="/analysis", tags=["analysis"])
