@@ -3,7 +3,7 @@
 # 1. Aşama: Bağımlılıklar
 FROM node:18-alpine AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
 
 # 2. Aşama: Build

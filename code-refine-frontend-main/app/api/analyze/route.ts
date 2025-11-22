@@ -2,35 +2,35 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
-    const { code } = await request.json()
+    const body = await request.json()
+    const { repo_url } = body
 
-    // Backend'deki /analysis endpoint'ine isteği yönlendir
+    if (!repo_url) {
+      return NextResponse.json(
+        { error: 'Repo URL is required' },
+        { status: 400 }
+      )
+    }
+
+    // Forward request to backend
     const response = await fetch('http://backend:8000/analysis/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code: code }), 
+      body: JSON.stringify({ repo_url }),
     })
 
-    // Backend'den gelen yanıt artık JSON değil, bir akış (stream).
-    // response.body'yi (yani akışı) doğrudan alıp tarayıcıya iletiyoruz.
+    const data = await response.json()
+
     if (!response.ok) {
-      // Hata durumunda, hatayı JSON olarak oku (eğer varsa)
-      const errorData = await response.json()
       return NextResponse.json(
-        { error: errorData.detail || 'Kod analizi başarısız oldu' },
+        { error: data.detail || 'Analysis failed' },
         { status: response.status }
       )
     }
 
-    // Başarılıysa, akışı (response.body) doğrudan tarayıcıya yolla
-    return new Response(response.body, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain', // Düz metin akışı yolluyoruz
-      },
-    })
+    return NextResponse.json(data)
 
   } catch (error) {
     console.error('Analyze API route error:', error)
