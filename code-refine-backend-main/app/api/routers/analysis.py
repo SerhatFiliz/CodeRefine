@@ -36,7 +36,8 @@ async def analyze_code(payload: dict = Body(...)):
         repo_path = github_service.clone_repository(repo_url)
         
         # 2. Get Content
-        code_content = github_service.get_repository_content(repo_path)
+        # Use Smart Context Selection with 10k token limit (approx 40k chars)
+        code_content = github_service.get_repository_content(repo_path, max_tokens=10000)
         print(f"DEBUG: Repo: {repo_url}, Content Length: {len(code_content)}")
         
         if not code_content:
