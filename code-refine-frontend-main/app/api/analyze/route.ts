@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { repo_url } = body
+    const { repo_url, model_id } = body
 
     if (!repo_url) {
       return NextResponse.json(
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ repo_url }),
+      body: JSON.stringify({ repo_url, model_id }),
     })
 
     const data = await response.json()

@@ -212,6 +212,24 @@ class GitHubService:
         print(f"DEBUG: Selected {selected_files_count} files. Total Tokens: {current_tokens}/{token_limit}")
         return "".join(content_buffer)
 
+    def clone_and_prepare(self, repo_url: str, max_tokens: int) -> tuple:
+        """
+        Clones the repo and prepares the content string respecting the token limit.
+        Returns (repo_path, code_content)
+        """
+        try:
+            repo_path = self.clone_repository(repo_url)
+            code_content = self.get_repository_content(repo_path, max_tokens=max_tokens)
+            return repo_path, code_content
+        except Exception as e:
+            print(f"Error in clone_and_prepare: {e}")
+            if 'repo_path' in locals() and repo_path:
+                self.cleanup(repo_path)
+            return None, None
+
+    def cleanup(self, repo_path: str):
+        self.cleanup_repository(repo_path)
+
     def cleanup_repository(self, repo_path: str):
         """
         Removes the cloned repository from the temporary directory.
